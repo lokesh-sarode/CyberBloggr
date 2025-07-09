@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+<!-- Page Header-->
+{% block body %}
+        <header class="masthead" style="background-image: url(' {{ url_for('static', filename='assets/img/about.jpg') }}')">
+            <div class="container position-relative px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="page-heading">
+                            <h1>CyberBloggr</h1>
+                            <span class="subheading">The cyber community members</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Main Content-->
+        <main class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <p><strong>Are you looking for amazing blogs on Cyber Security or Pentesting..?</strong></p>
+                        <p>Then here we are for your support!</p>
+                        <p>You'll get amazing knowledge about cyber security and penetration testing on this site.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+{% endblock %}
