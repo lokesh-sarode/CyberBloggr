@@ -5,8 +5,8 @@ import json
 from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
-# import pymysql
-# pymysql.install_as_MySQLdb()
+import pymysql
+pymysql.install_as_MySQLdb()
 # with open('config.json', 'r') as c:
 #     params =json.load(c)["params"]
 # local_server = True
@@ -155,8 +155,10 @@ def uploader():
     if ('user' in session and session['user']==params['admin_user']):
         if request.method=='POST':
             f = request.files['file1']
-            f.save(os.path.join("/tmp", secure_filename(f.filename)))
-            return "Uploaded successfully"
+            f.save(os.path.join(".\\static\\uploads", secure_filename(f.filename)))
+    posts = Posts.query.filter_by().all()[0:params['no_of_posts']]
+    return render_template('index.html', params=params, posts=posts)
+
 
 
 @app.route('/logout')
