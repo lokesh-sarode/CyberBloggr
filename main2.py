@@ -7,45 +7,16 @@ import os
 from werkzeug.utils import secure_filename
 import pymysql
 pymysql.install_as_MySQLdb()
-from dotenv import load_dotenv
+# with open('config.json', 'r') as c:
+#     params =json.load(c)["params"]
+# local_server = True
 
-load_dotenv()
-params = {
-    "blog_name": os.getenv("BLOG_NAME", "CyberBloggr"),
-    "tag_line": os.getenv("TAG_LINE", "A Cyber Centric Techie"),
-    "post_author": os.getenv("POST_AUTHOR", "Admin"),
-
-    "twitter_url": os.getenv("TWITTER_URL", ""),
-    "facebook_url": os.getenv("FACEBOOK_URL", ""),
-    "github_url": os.getenv("GITHUB_URL", ""),
-
-    "gmail_user": os.getenv("GMAIL_USER"),
-    "gmail_password": os.getenv("GMAIL_PASSWORD"),
-
-    "no_of_posts": int(os.getenv("NO_OF_POSTS", 4)),
-
-    "admin_user": os.getenv("ADMIN_USER"),
-    "admin_password": os.getenv("ADMIN_PASSWORD"),
-
-    "upload_location": os.getenv("UPLOAD_LOCATION", "static/uploads")
-}
-
-required_vars = [
-    "ADMIN_USER",
-    "ADMIN_PASSWORD",
-    "DATABASE_URI",
-    "FLASK_SECRET_KEY"
-]
-for var in required_vars:
-    if not os.getenv(var):
-        raise RuntimeError(f"Missing environment variable: {var}")
+with open('config.json', 'r') as c:
+    params = json.load(c)["params"]
 
 app = Flask(__name__)
-# app.secret_key = 'super-secret-key'
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev-secret-key")
+app.secret_key = 'super-secret-key'
 app.config['UPLOAD_FOLDER'] = params["upload_location"]
-
-# Mail Configuration
 app.config.update(
     MAIL_SERVER = 'smtp.gmail.com',
     MAIL_PORT = '465',
@@ -57,14 +28,13 @@ app.config.update(
 mail = Mail(app)
 
 # Set SQLAlchemy URI: Prefer DATABASE_URL if available (Render), else local config
-db_uri = os.getenv("DATABASE_URI")
-if not db_uri:
-    raise RuntimeError("DATABASE_URI environment variable not set")
-# Fix postgres prefix issue if needed
-if db_uri.startswith("postgres://"):
-    db_uri = db_uri.replace("postgres://", "postgresql://", 1)    
-app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db_uri = os.getenv("DATABASE_URL")
+if db_uri and db_uri.startswith("postgres://"):
+    db_uri = db_uri.replace("postgres://", "postgresql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = params['local_uri']
+
 db = SQLAlchemy(app)
 
 class Contacts(db.Model):
@@ -185,10 +155,7 @@ def uploader():
     if ('user' in session and session['user']==params['admin_user']):
         if request.method=='POST':
             f = request.files['file1']
-            upload_path = os.path.join(
-                app.config['UPLOAD_FOLDER'], secure_filename(f.filename)
-            )
-            f.save(upload_path)
+            f.save(os.path.join(".\\static\\uploads", secure_filename(f.filename)))
     posts = Posts.query.filter_by().all()[0:params['no_of_posts']]
     return render_template('index.html', params=params, posts=posts)
 

@@ -1,0 +1,4 @@
+Notes Regarding Hosting This app on the Back4App:
+
+1. moved config.json to .gitignore and replaced with env variables on back4app
+2. moved cyberbloggr.sql to .gitignore
