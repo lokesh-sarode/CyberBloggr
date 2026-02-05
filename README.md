@@ -1,7 +1,7 @@
 # Python_Web_development
 A project to manage blogs on the website "Cyberbloggr"
 
-### WEbsite Link:
+### Website Link:
 🔗 https://cyberbloggrweb.onrender.com/
 
 #Project Requirements/python packages:-
