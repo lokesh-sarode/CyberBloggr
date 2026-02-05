@@ -1,2 +1,6 @@
 config.json
 cyberbloggr.sql
+.env
+__pycache__/
+instance/
+*.pyc
